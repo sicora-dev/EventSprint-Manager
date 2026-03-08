@@ -351,14 +351,14 @@ const AdminDashboardPage = () => {
               <tbody>
                 {events.map((event, index) => (
                   <tr key={event.id} className="table-row-enter" style={{ animationDelay: `${index * 35}ms` }}>
-                    <td>
+                    <td data-label="Titulo">
                       <input
                         className="form-control form-control-sm"
                         value={drafts[event.id]?.title || ''}
                         onChange={(e) => updateDraft(event.id, 'title', e.target.value)}
                       />
                     </td>
-                    <td>
+                    <td data-label="Fecha">
                       <input
                         type="datetime-local"
                         className="form-control form-control-sm"
@@ -367,7 +367,7 @@ const AdminDashboardPage = () => {
                       />
                       <small className="text-muted d-block mt-1">{formatDateTime(event.event_date)}</small>
                     </td>
-                    <td>
+                    <td data-label="Estado">
                       <select
                         className="form-select form-select-sm"
                         value={drafts[event.id]?.status || 'planned'}
@@ -381,7 +381,7 @@ const AdminDashboardPage = () => {
                         <StatusBadge status={event.status} />
                       </div>
                     </td>
-                    <td>
+                    <td data-label="Prioridad">
                       <select
                         className="form-select form-select-sm"
                         value={drafts[event.id]?.priority || 'medium'}
@@ -392,10 +392,10 @@ const AdminDashboardPage = () => {
                         <option value="high">Alta</option>
                       </select>
                     </td>
-                    <td>
+                    <td data-label="Owner">
                       <small>{event.profiles?.display_name || event.profiles?.email || 'Sin owner'}</small>
                     </td>
-                    <td>
+                    <td className="admin-actions-cell" data-label="Acciones">
                       <div className="d-grid gap-1">
                         <button
                           className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"

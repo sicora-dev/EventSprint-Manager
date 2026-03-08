@@ -1,5 +1,6 @@
-import { LayoutDashboard, LogOut, ShieldCheck, UserCircle2 } from 'lucide-react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, LogOut, Menu, ShieldCheck, UserCircle2, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import RoleBadge from '../ui/RoleBadge';
 import { useAuthStore } from '../../store/authStore';
@@ -8,13 +9,19 @@ const navClass = ({ isActive }) => `btn btn-sm nav-btn ${isActive ? 'active' : '
 
 const AppLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, role, logout } = useAuthStore((state) => ({
     user: state.user,
     role: state.role,
     logout: state.logout
   }));
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const appName = import.meta.env.VITE_APP_NAME || 'EventSprint Manager';
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
 
   const handleLogout = async () => {
     try {
@@ -30,13 +37,24 @@ const AppLayout = () => {
     <div className="app-shell">
       <header className="top-header">
         <div className="container-fluid app-container py-3">
-          <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+          <div className="top-header-inner d-flex align-items-center justify-content-between gap-3 flex-wrap">
             <div>
               <p className="eyebrow mb-1">Proyecto EVA2</p>
               <h1 className="h4 mb-0 app-title">{appName}</h1>
             </div>
 
-            <div className="d-flex align-items-center gap-2 flex-wrap">
+            <button
+              className="menu-toggle"
+              type="button"
+              aria-label={isMenuOpen ? 'Cerrar menu' : 'Abrir menu'}
+              aria-expanded={isMenuOpen}
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+            >
+              {isMenuOpen ? <X size={16} strokeWidth={2} /> : <Menu size={16} strokeWidth={2} />}
+              <span>{isMenuOpen ? 'Cerrar menu' : 'Menu'}</span>
+            </button>
+
+            <div className={`top-header-actions ${isMenuOpen ? 'open' : ''}`}>
               <RoleBadge role={role} />
               <span className="user-pill d-inline-flex align-items-center gap-2">
                 <UserCircle2 size={16} strokeWidth={1.9} />
@@ -51,9 +69,9 @@ const AppLayout = () => {
         </div>
       </header>
 
-      <nav className="main-nav border-bottom border-light-subtle">
-        <div className="container-fluid app-container py-2 d-flex gap-2 flex-wrap">
-          <NavLink className={navClass} to="/usuario">
+      <nav className={`main-nav border-bottom border-light-subtle ${isMenuOpen ? 'open' : ''}`}>
+        <div className="main-nav-inner container-fluid app-container py-2">
+          <NavLink className={navClass} to="/usuario" onClick={() => setIsMenuOpen(false)}>
             <span className="d-inline-flex align-items-center gap-2">
               <LayoutDashboard size={15} strokeWidth={2} />
               Panel usuario
@@ -61,7 +79,7 @@ const AppLayout = () => {
           </NavLink>
           {role === 'admin' && (
             <>
-              <NavLink className={navClass} to="/admin">
+              <NavLink className={navClass} to="/admin" onClick={() => setIsMenuOpen(false)}>
                 <span className="d-inline-flex align-items-center gap-2">
                   <ShieldCheck size={15} strokeWidth={2} />
                   Panel admin
