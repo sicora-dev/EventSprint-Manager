@@ -39,7 +39,6 @@ const AppLayout = () => {
         <div className="container-fluid app-container py-3">
           <div className="top-header-inner d-flex align-items-center justify-content-between gap-3 flex-wrap">
             <div>
-              <p className="eyebrow mb-1">Proyecto EVA2</p>
               <h1 className="h4 mb-0 app-title">{appName}</h1>
             </div>
 
