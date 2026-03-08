@@ -10,14 +10,21 @@ const navClass = ({ isActive }) => `btn btn-sm nav-btn ${isActive ? 'active' : '
 const AppLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, role, logout } = useAuthStore((state) => ({
+  const { user, profile, role, logout } = useAuthStore((state) => ({
     user: state.user,
+    profile: state.profile,
     role: state.role,
     logout: state.logout
   }));
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const appName = import.meta.env.VITE_APP_NAME || 'EventSprint Manager';
+  const userLabel =
+    profile?.display_name?.trim() ||
+    user?.user_metadata?.display_name?.trim() ||
+    user?.user_metadata?.full_name?.trim() ||
+    user?.email?.split('@')?.[0] ||
+    'Usuario';
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -57,7 +64,7 @@ const AppLayout = () => {
               <RoleBadge role={role} />
               <span className="user-pill d-inline-flex align-items-center gap-2">
                 <UserCircle2 size={16} strokeWidth={1.9} />
-                {user?.email}
+                {userLabel}
               </span>
               <button className="btn btn-outline-light btn-sm d-inline-flex align-items-center gap-2" onClick={handleLogout}>
                 <LogOut size={15} strokeWidth={2} />
